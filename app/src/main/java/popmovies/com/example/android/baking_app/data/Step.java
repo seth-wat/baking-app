@@ -1,6 +1,7 @@
 package popmovies.com.example.android.baking_app.data;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
 /**
  * * POJO for JSON data
@@ -14,9 +15,10 @@ public class Step {
     String videoUrl;
     String thumbnailUrl;
 
-    public Step(int id, String shorDescription, String longDescription, String videoUrl, String thumbnailUrl) {
+    @ParcelConstructor
+    public Step(int id, String shortDescription, String longDescription, String videoUrl, String thumbnailUrl) {
         this.id = id;
-        this.shortDescription = shorDescription;
+        this.shortDescription = shortDescription;
         this.longDescription = longDescription;
         this.videoUrl = videoUrl;
         this.thumbnailUrl = thumbnailUrl;

@@ -1,6 +1,7 @@
 package popmovies.com.example.android.baking_app.data;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
 import java.util.List;
 
@@ -11,6 +12,22 @@ import java.util.List;
 @Parcel
 public class Recipe {
 
+    int id;
+    String name;
+    int servings;
+    String image;
+    List<Ingredient> ingredients;
+    List<Step> steps;
+
+    @ParcelConstructor
+    public Recipe(int id, String name, int servings, String image, List<Ingredient> ingredients, List<Step> steps) {
+        this.id = id;
+        this.name = name;
+        this.servings = servings;
+        this.image = image;
+        this.ingredients = ingredients;
+        this.steps = steps;
+    }
 
     public int getId() {
         return id;
@@ -36,19 +53,4 @@ public class Recipe {
         return steps;
     }
 
-    int id;
-    String name;
-    int servings;
-    String image;
-    List<Ingredient> ingredients;
-    List<Step> steps;
-
-    public Recipe(int id, String name, int servings, String image, List<Ingredient> ingredients, List<Step> steps) {
-        this.id = id;
-        this.name = name;
-        this.servings = servings;
-        this.image = image;
-        this.ingredients = ingredients;
-        this.steps = steps;
-    }
 }
