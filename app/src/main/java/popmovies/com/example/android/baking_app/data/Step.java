@@ -1,9 +1,11 @@
 package popmovies.com.example.android.baking_app.data;
 
+import org.parceler.Parcel;
+
 /**
  * * POJO for JSON data
  */
-
+@Parcel
 public class Step {
 
     int id;

@@ -1,11 +1,14 @@
 package popmovies.com.example.android.baking_app.data;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 /**
  * POJO for JSON data
  */
 
+@Parcel
 public class Recipe {
 
 
