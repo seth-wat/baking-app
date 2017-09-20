@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 TextView tv = (TextView) findViewById(R.id.only_text_view);
                 ArrayList<Recipe> r = JsonUtils.parseRecipes(s);
-                    tv.setText(r.get(0).getSteps().get(1).getShortDescription() + " " + r.get(1).getName() + " " + r.get(2).getName() + " " + r.get(3).getName());
+                    tv.setText(r.get(0).getSteps().get(1 ).getShortDescription() + " " + r.get(1).getName() + " " + r.get(2).getName() + " " + r.get(3).getName());
             }
         }.execute();
     }
