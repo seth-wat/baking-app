@@ -10,6 +10,8 @@ import android.widget.Toast;
 import org.parceler.Parcel;
 import org.parceler.Parcels;
 
+import java.util.List;
+
 import popmovies.com.example.android.baking_app.data.Recipe;
 import popmovies.com.example.android.baking_app.data.Step;
 import popmovies.com.example.android.baking_app.eventlisteners.MainRecipeClickListener;
@@ -43,7 +45,7 @@ public class RecipeActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onStepSelected(Step step) {
-        Toast.makeText(this, step.getLongDescription(), Toast.LENGTH_LONG).show();
+    public void onStepSelected(List<Step> steps, int position) {
+        Toast.makeText(this, steps.get(position).getLongDescription(), Toast.LENGTH_LONG).show();
     }
 }

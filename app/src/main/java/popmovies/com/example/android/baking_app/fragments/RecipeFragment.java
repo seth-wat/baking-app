@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -71,7 +73,7 @@ public class RecipeFragment extends Fragment {
     }
     //check if the container activity implements this interface in onAttach
     public interface onStepSelectedListener {
-        void onStepSelected(Step step);
+        void onStepSelected(List<Step> steps, int position);
     }
 
     public void setmCallback(onStepSelectedListener mCallback) {
