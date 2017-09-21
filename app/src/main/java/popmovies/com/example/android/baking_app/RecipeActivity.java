@@ -11,10 +11,12 @@ import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import popmovies.com.example.android.baking_app.data.Recipe;
+import popmovies.com.example.android.baking_app.data.Step;
 import popmovies.com.example.android.baking_app.eventlisteners.MainRecipeClickListener;
 import popmovies.com.example.android.baking_app.fragments.RecipeFragment;
 
-public class RecipeActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity implements
+    RecipeFragment.onStepSelectedListener {
     Recipe recipe;
 
     @Override
@@ -32,6 +34,7 @@ public class RecipeActivity extends AppCompatActivity {
         //Create a new recipe fragment and pass in the recipe we just retrieved.
         RecipeFragment recipeFragment = new RecipeFragment();
         recipeFragment.setRecipe(recipe);
+        recipeFragment.setmCallback(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -39,4 +42,8 @@ public class RecipeActivity extends AppCompatActivity {
                 .commit();
     }
 
+    @Override
+    public void onStepSelected(Step step) {
+        Toast.makeText(this, step.getLongDescription(), Toast.LENGTH_LONG).show();
+    }
 }
