@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import popmovies.com.example.android.baking_app.R;
+import popmovies.com.example.android.baking_app.adapters.StepAdapter;
 import popmovies.com.example.android.baking_app.data.Recipe;
+import popmovies.com.example.android.baking_app.data.Step;
 
 /**
  * This fragment contains a list of ingredients and steps
@@ -50,6 +53,16 @@ public class RecipeFragment extends Fragment {
             ingredientsTextView.setText(ingredientsTextView.getText() + "\n" +
                 recipe.getIngredients().get(i).getIngredient());
         }
+
+        /*
+        Set the layout manager/adapter for the RecyclerView and pass in the steps
+        as well as the onStepSelectedListener implemented in RecipeActivity to
+        facilitate communication between this fragment and the host activity.
+         */
+        LinearLayoutManager stepLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        stepsRecyclerView.setLayoutManager(stepLayoutManager);
+        stepsRecyclerView.setAdapter(new StepAdapter(getContext(), recipe.getSteps(), mCallback));
+
         return rootView;
     }
 
@@ -58,7 +71,11 @@ public class RecipeFragment extends Fragment {
     }
     //check if the container activity implements this interface in onAttach
     public interface onStepSelectedListener {
-        void onStepSelected();
+        void onStepSelected(Step step);
+    }
+
+    public void setmCallback(onStepSelectedListener mCallback) {
+        this.mCallback = mCallback;
     }
 
 //    @Override
