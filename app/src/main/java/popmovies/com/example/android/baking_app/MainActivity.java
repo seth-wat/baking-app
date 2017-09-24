@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
+        if (data.length() <= 0) {
+            recipeOneTextView.setText("Error");
+        }
         recipes = JsonUtils.parseRecipes(data);
         /*
         Set each recipe text view to it's corresponding recipe name and set

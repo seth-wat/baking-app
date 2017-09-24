@@ -38,7 +38,7 @@ public class Step {
 
     //The JSON parsed contains missing video info at times, use this
     //method to get the video url
-    public String getDisplayVideoUrl() {
+    public String getDisplayVideoUrlString() {
         if (!videoUrl.isEmpty()) {
             return videoUrl;
         }
