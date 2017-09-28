@@ -1,5 +1,7 @@
 package popmovies.com.example.android.baking_app;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +20,7 @@ import popmovies.com.example.android.baking_app.data.Step;
 import popmovies.com.example.android.baking_app.eventlisteners.MainRecipeClickListener;
 import popmovies.com.example.android.baking_app.fragments.RecipeFragment;
 import popmovies.com.example.android.baking_app.fragments.StepFragment;
+import popmovies.com.example.android.baking_app.widget.RecipeWidgetProvider;
 
 public class RecipeActivity extends AppCompatActivity implements
     RecipeFragment.onStepSelectedListener {
@@ -46,6 +49,17 @@ public class RecipeActivity extends AppCompatActivity implements
                     .get(MainRecipeClickListener.RECIPE_EXTRA));
         }
         getSupportActionBar().setTitle(recipe.getName());
+
+        /*
+        Send a broadcast to update any widgets.
+         */
+        Intent widgetIntent = new Intent(this, RecipeWidgetProvider.class);
+        widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplication());
+        int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(getApplication(), RecipeWidgetProvider.class));
+        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        widgetIntent.putExtra(EXTRA_RECIPE_NAME, recipe.getName());
+        sendBroadcast(widgetIntent);
 
         //Create a new recipe fragment and pass in the recipe we just retrieved.
         RecipeFragment recipeFragment = new RecipeFragment();
