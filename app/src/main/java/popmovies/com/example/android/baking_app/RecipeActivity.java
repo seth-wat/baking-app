@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class RecipeActivity extends AppCompatActivity implements
     public static final String EXTRA_STEPS = "extra_steps";
     public static final String EXTRA_STEP_POSITION = "extra_step_position";
     public static final String EXTRA_RECIPE_NAME = "extra_recipe_name";
+    public static final String EXTRA_RECIPE = "extra_recipe";
     Recipe recipe;
     boolean isTabletMode = false;
 
@@ -58,7 +60,7 @@ public class RecipeActivity extends AppCompatActivity implements
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplication());
         int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(getApplication(), RecipeWidgetProvider.class));
         widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        widgetIntent.putExtra(EXTRA_RECIPE_NAME, recipe.getName());
+        widgetIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
         sendBroadcast(widgetIntent);
 
         //Create a new recipe fragment and pass in the recipe we just retrieved.
