@@ -15,6 +15,7 @@ import popmovies.com.example.android.baking_app.MainActivity;
 import popmovies.com.example.android.baking_app.R;
 import popmovies.com.example.android.baking_app.RecipeActivity;
 import popmovies.com.example.android.baking_app.data.Recipe;
+import services.ListWidgetService;
 
 /**
  * Implementation of App Widget functionality.
@@ -43,7 +44,13 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
         if (passedRecipe != null) {
             views.setTextViewText(R.id.widget_recipe_name_text_view, passedRecipe.getName());
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.ingredient_list_view);
+            RemoteViews listRemoteView = new RemoteViews(context.getPackageName(), R.layout.item_ingredient);
+
+
+            Intent adapterIntent = new Intent(context, ListWidgetService.class);
+            adapterIntent.putExtra(RecipeActivity.EXTRA_RECIPE, Parcels.wrap(passedRecipe));
+            views.setRemoteAdapter(R.id.ingredient_list_view, adapterIntent);
+
 
         } else {
             views.setTextViewText(R.id.widget_recipe_name_text_view, widgetText);

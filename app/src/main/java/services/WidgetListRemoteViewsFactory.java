@@ -47,9 +47,9 @@ public class WidgetListRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-        remoteViews.
-        return null;
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.item_ingredient);
+        remoteViews.setTextViewText(R.id.ingredient_holder_text_view, ingredients.get(position).getIngredient());
+        return remoteViews;
     }
 
     @Override
