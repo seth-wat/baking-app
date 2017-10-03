@@ -7,19 +7,16 @@
     android:padding="@dimen/widget_margin">
     <TextView
         android:id="@+id/widget_recipe_name_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:text="@string/appwidget_text"
+        android:textAlignment="center"
         android:textColor="#ffffff"
         android:textSize="24sp"
         android:textStyle="bold|italic" />
     <ListView
         android:id="@+id/ingredient_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"/>
 
 </LinearLayout>

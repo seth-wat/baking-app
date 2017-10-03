@@ -5,17 +5,19 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import popmovies.com.example.android.baking_app.MainActivity;
 import popmovies.com.example.android.baking_app.R;
 import popmovies.com.example.android.baking_app.RecipeActivity;
+import popmovies.com.example.android.baking_app.data.Ingredient;
 import popmovies.com.example.android.baking_app.data.Recipe;
-import services.ListWidgetService;
+import popmovies.com.example.android.baking_app.services.ListWidgetService;
 
 /**
  * Implementation of App Widget functionality.
@@ -33,7 +35,6 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId, Recipe passedRecipe) {
-        CharSequence widgetText = "Testing";
         /*
         If I wanted to handle resizing
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
@@ -43,17 +44,42 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
 
         if (passedRecipe != null) {
+
             views.setTextViewText(R.id.widget_recipe_name_text_view, passedRecipe.getName());
-            RemoteViews listRemoteView = new RemoteViews(context.getPackageName(), R.layout.item_ingredient);
+            /*
+            Loop over the ingredients and add them to a List to make passing them
+            through adapterIntent easier.
+             */
+            ArrayList<String> ingredientToPass = new ArrayList<>();
 
+            for (Ingredient ing : passedRecipe.getIngredients()) {
+                ingredientToPass.add(ing.getIngredient());
+            }
 
+            /*
+            Set the remote adapter.
+             */
             Intent adapterIntent = new Intent(context, ListWidgetService.class);
-            adapterIntent.putExtra(RecipeActivity.EXTRA_RECIPE, Parcels.wrap(passedRecipe));
+            adapterIntent.putExtra("ingredientBundle", ingredientToPass);
             views.setRemoteAdapter(R.id.ingredient_list_view, adapterIntent);
+
+            /*
+            updateRemoteViewsIntent broadcast the newly selected recipe ingredients to
+            the remote adapter. It is done in this way because setRemoteAdapter
+            does not update.
+             */
+            Intent updateRemoteViewsIntent = new Intent("update_me");
+            updateRemoteViewsIntent.putExtra("ingredientBundle", ingredientToPass);
+            context.sendBroadcast(updateRemoteViewsIntent);
+
+            /*
+            After broadcasting invalidate the old data.
+             */
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.ingredient_list_view);
 
 
         } else {
-            views.setTextViewText(R.id.widget_recipe_name_text_view, widgetText);
+            views.setTextViewText(R.id.widget_recipe_name_text_view, "Please select a recipe!");
         }
 
         Intent intent = new Intent(context, MainActivity.class);
@@ -82,5 +108,6 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
+
 }
 
