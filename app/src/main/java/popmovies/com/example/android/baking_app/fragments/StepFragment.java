@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -49,6 +50,7 @@ public class StepFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         SimpleExoPlayerView simpleExoPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exo_player_view);
+        FrameLayout exoPlayerNotFoundView = (FrameLayout) rootView.findViewById(R.id.exo_player_not_found_view);
 
         /*
         Code below handles creating and preparing the SimpleExoPlayer
@@ -56,19 +58,25 @@ public class StepFragment extends Fragment {
         */
         TrackSelector trackSelector = new DefaultTrackSelector();
         LoadControl loadControl = new DefaultLoadControl();
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-        Uri mediaUri = Uri.parse(step.getDisplayVideoUrlString());
-        String userAgent = Util.getUserAgent(getContext(), "baking_app");
-        MediaSource mediaSource = new ExtractorMediaSource(
-                mediaUri,
-                new DefaultDataSourceFactory(getContext(), userAgent),
-                new DefaultExtractorsFactory(), null, null
-        );
-        simpleExoPlayer.prepare(mediaSource);
-        simpleExoPlayer.setPlayWhenReady(false);
+        if (!step.getDisplayVideoUrlString().isEmpty()) {
+            exoPlayerNotFoundView.setVisibility(View.INVISIBLE);
+            simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
+            Uri mediaUri = Uri.parse(step.getDisplayVideoUrlString());
+            String userAgent = Util.getUserAgent(getContext(), "baking_app");
+            MediaSource mediaSource = new ExtractorMediaSource(
+                    mediaUri,
+                    new DefaultDataSourceFactory(getContext(), userAgent),
+                    new DefaultExtractorsFactory(), null, null
+            );
+            simpleExoPlayer.prepare(mediaSource);
+            simpleExoPlayer.setPlayWhenReady(false);
 
-        //Attach the simpleExoPlayer to its view
-        simpleExoPlayerView.setPlayer(simpleExoPlayer);
+            //Attach the simpleExoPlayer to its view
+            simpleExoPlayerView.setPlayer(simpleExoPlayer);
+        } else {
+            simpleExoPlayerView.setVisibility(View.INVISIBLE);
+            exoPlayerNotFoundView.setVisibility(View.VISIBLE);
+        }
         unDetailTextView.setText(step.getShortDescription());
         stepDetailTextView.setText(step.getLongDescription());
         return rootView;

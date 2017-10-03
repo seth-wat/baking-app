@@ -4,15 +4,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="popmovies.com.example.android.baking_app.fragments.StepFragment">
+
     <TextView
+        android:id="@+id/step_undetail_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/step_undetail_text_view"/>
+        android:layout_height="wrap_content" />
+
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:paddingTop="10dp"
         android:id="@+id/exo_player_view"
         android:layout_width="match_parent"
-        android:layout_height="220dp"/>
+        android:layout_height="220dp"
+        android:paddingTop="10dp" />
+
+    <FrameLayout
+        android:id="@+id/exo_player_not_found_view"
+        android:layout_width="match_parent"
+        android:visibility="invisible"
+        android:layout_height="220dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/holo_red_light"
+            android:paddingTop="10dp"
+            android:textStyle="bold"
+            android:text="Sorry, no video was found for this step" />
+    </FrameLayout>
+
     <TextView
         android:id="@+id/step_detail_text_view"
         android:layout_width="match_parent"

@@ -45,7 +45,7 @@ public class Step {
         if (!thumbnailUrl.isEmpty()) {
             return thumbnailUrl;
         }
-        return "No video found.";
+        return "";
     }
 
 
