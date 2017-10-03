@@ -17,11 +17,6 @@ import popmovies.com.example.android.baking_app.data.Recipe;
 public class ListWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        if (intent.hasExtra("ingredientBundle")) {
-            for (String s : intent.getStringArrayListExtra("ingredientBundle")) {
-                Log.v("LOG", "Here is an ingredient: " + s);
-            }
-        }
         return new WidgetListRemoteViewsFactory(this.getApplicationContext(), intent.getStringArrayListExtra("ingredientBundle"));
     }
 }

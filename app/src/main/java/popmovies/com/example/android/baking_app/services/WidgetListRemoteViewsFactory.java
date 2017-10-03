@@ -59,7 +59,7 @@ public class WidgetListRemoteViewsFactory implements RemoteViewsService.RemoteVi
         This condition below is used to prevent an IndexOutOfBoundsException in the widget.
          */
         if (position == ingredients.size()) position = ingredients.size() - 1;
-        remoteViews.setTextViewText(R.id.ingredient_holder_text_view, ingredients.get(position));
+        remoteViews.setTextViewText(R.id.ingredient_holder_text_view, (position + 1) + ". " + ingredients.get(position));
         return remoteViews;
     }
 
