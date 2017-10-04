@@ -6,19 +6,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="popmovies.com.example.android.baking_app.StepActivity">
+
     <FrameLayout
         android:id="@+id/container_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/next_step_button"
-        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Next Step"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/previous_step_button"
-        android:text="Previous Step"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/previous_step_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Previous Step" />
+
+        <Button
+            android:id="@+id/next_step_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Step" />
+    </LinearLayout>
 
 </LinearLayout>

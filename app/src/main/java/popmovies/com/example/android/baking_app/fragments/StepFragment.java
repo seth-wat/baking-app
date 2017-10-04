@@ -59,7 +59,7 @@ public class StepFragment extends Fragment {
         TrackSelector trackSelector = new DefaultTrackSelector();
         LoadControl loadControl = new DefaultLoadControl();
         if (!step.getDisplayVideoUrlString().isEmpty()) {
-            exoPlayerNotFoundView.setVisibility(View.INVISIBLE);
+            exoPlayerNotFoundView.setVisibility(View.GONE);
             simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
             Uri mediaUri = Uri.parse(step.getDisplayVideoUrlString());
             String userAgent = Util.getUserAgent(getContext(), "baking_app");
@@ -74,7 +74,7 @@ public class StepFragment extends Fragment {
             //Attach the simpleExoPlayer to its view
             simpleExoPlayerView.setPlayer(simpleExoPlayer);
         } else {
-            simpleExoPlayerView.setVisibility(View.INVISIBLE);
+            simpleExoPlayerView.setVisibility(View.GONE);
             exoPlayerNotFoundView.setVisibility(View.VISIBLE);
         }
         unDetailTextView.setText(step.getShortDescription());
@@ -89,7 +89,12 @@ public class StepFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        simpleExoPlayer.stop();
-        simpleExoPlayer.release();
+        /*
+        If step is empty then simpleExoPlayer was never initialized.
+         */
+        if (!step.getDisplayVideoUrlString().isEmpty()) {
+            simpleExoPlayer.stop();
+            simpleExoPlayer.release();
+        }
     }
 }

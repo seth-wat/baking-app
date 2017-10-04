@@ -24,7 +24,7 @@ import popmovies.com.example.android.baking_app.fragments.StepFragment;
 import popmovies.com.example.android.baking_app.widget.RecipeWidgetProvider;
 
 public class RecipeActivity extends AppCompatActivity implements
-    RecipeFragment.onStepSelectedListener {
+        RecipeFragment.onStepSelectedListener {
 
     public static final String EXTRA_STEPS = "extra_steps";
     public static final String EXTRA_STEP_POSITION = "extra_step_position";
@@ -115,4 +115,5 @@ public class RecipeActivity extends AppCompatActivity implements
                     .commit();
         }
     }
+
 }

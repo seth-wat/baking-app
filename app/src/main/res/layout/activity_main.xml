@@ -23,6 +23,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="45sp"
+                android:textStyle="bold|italic"
                 tools:text="Recipe 1!" />
         </FrameLayout>
 
@@ -37,6 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="45sp"
+                android:textStyle="bold|italic"
                 tools:text="Recipe 2!" />
         </FrameLayout>
 
@@ -51,6 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="45sp"
+                android:textStyle="bold|italic"
                 tools:text="Recipe 3!" />
         </FrameLayout>
 
@@ -65,6 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="45sp"
+                android:textStyle="bold|italic"
                 tools:text="Recipe 4!" />
         </FrameLayout>
     </LinearLayout>

@@ -34,7 +34,6 @@ public class RecipeFragment extends Fragment {
     private onStepSelectedListener mCallback;
     private Unbinder unbinder;
 
-    @BindView(R.id.recipe_name_text_view) TextView recipeNameTextView;
     @BindView(R.id.ingredients_text_view) TextView ingredientsTextView;
     @BindView(R.id.steps_recycler_view) RecyclerView stepsRecyclerView;
 
@@ -49,11 +48,14 @@ public class RecipeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        recipeNameTextView.setText(recipe.getName());
         //Loop over the ingredient list and add them to the TextView.
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
-            ingredientsTextView.setText(ingredientsTextView.getText() + "\n" +
-                recipe.getIngredients().get(i).getIngredient());
+            if (i == 0) {
+                ingredientsTextView.setText("- " + recipe.getIngredients().get(i).getIngredient());
+            } else {
+                ingredientsTextView.setText(ingredientsTextView.getText() + "\n" +
+                        "- " + recipe.getIngredients().get(i).getIngredient());
+            }
         }
 
         /*

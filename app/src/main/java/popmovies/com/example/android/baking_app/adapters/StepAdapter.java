@@ -40,7 +40,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         TextView stepTextView = (TextView) holder.itemView.findViewById(R.id.step_text_view);
-        stepTextView.setText(steps.get(position).getShortDescription());
+        stepTextView.setText( (position) + ". " + steps.get(position).getShortDescription());
         /*
         By calling the listener.onStepSelected we can pass the Step data back to
         the Fragments host Activity.
