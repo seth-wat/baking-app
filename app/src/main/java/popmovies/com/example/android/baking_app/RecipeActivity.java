@@ -79,6 +79,7 @@ public class RecipeActivity extends AppCompatActivity implements
                     .commit();
         } else {
             //we are in tablet mode
+            recipeFragment.setTabletMode(true);
             StepFragment stepFragment = new StepFragment();
             stepFragment.setStep(recipe.getSteps().get(0));
             fragmentManager.beginTransaction()

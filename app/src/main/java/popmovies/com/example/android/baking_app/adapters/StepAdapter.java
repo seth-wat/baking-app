@@ -1,6 +1,9 @@
 package popmovies.com.example.android.baking_app.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +26,17 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     List<Step> steps;
     Context context;
     RecipeFragment.onStepSelectedListener listener;
+    ArrayList<View> clearViews;
+    boolean tabletMode = false;
 
-    public StepAdapter(Context context, List<Step> steps, RecipeFragment.onStepSelectedListener listener) {
+    public StepAdapter(Context context, List<Step> steps, RecipeFragment.onStepSelectedListener listener, boolean tabletMode) {
         this.context = context;
         this.steps = steps;
         this.listener = listener;
+        clearViews = new ArrayList<>();
+        if (tabletMode) {
+            this.tabletMode = tabletMode;
+        }
     }
 
 
@@ -41,14 +50,35 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         TextView stepTextView = (TextView) holder.itemView.findViewById(R.id.step_text_view);
         stepTextView.setText( (position) + ". " + steps.get(position).getShortDescription());
+
         /*
-        By calling the listener.onStepSelected we can pass the Step data back to
-        the Fragments host Activity.
+        If we are at position 0 and using a tablet, then the item view should be highlighted because
+        that step will be displayed by default in StepFragment.
          */
+        if (position == 0 && tabletMode) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+            clearViews.add(holder.itemView);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
+                By calling the listener.onStepSelected we can pass the Step data back to
+                the Fragments host Activity.
+                */
                 listener.onStepSelected(steps, position);
+                /*
+                When a view is selected highlight it, if a view has been selected before
+                return the color to normal.
+                 */
+                if (!clearViews.isEmpty()) {
+                    for (View view : clearViews) {
+                        view.setBackgroundColor(ContextCompat.getColor(context, R.color.defaultBackground));
+                        clearViews.remove(view);
+                    }
+                }
+                v.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+                clearViews.add(v);
             }
         });
 

@@ -33,6 +33,7 @@ public class RecipeFragment extends Fragment {
     private Recipe recipe;
     private onStepSelectedListener mCallback;
     private Unbinder unbinder;
+    private boolean isTablet = false;
 
     @BindView(R.id.ingredients_text_view) TextView ingredientsTextView;
     @BindView(R.id.steps_recycler_view) RecyclerView stepsRecyclerView;
@@ -65,7 +66,7 @@ public class RecipeFragment extends Fragment {
          */
         LinearLayoutManager stepLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         stepsRecyclerView.setLayoutManager(stepLayoutManager);
-        stepsRecyclerView.setAdapter(new StepAdapter(getContext(), recipe.getSteps(), mCallback));
+        stepsRecyclerView.setAdapter(new StepAdapter(getContext(), recipe.getSteps(), mCallback, isTablet));
 
         return rootView;
     }
@@ -80,6 +81,10 @@ public class RecipeFragment extends Fragment {
 
     public void setmCallback(onStepSelectedListener mCallback) {
         this.mCallback = mCallback;
+    }
+
+    public void setTabletMode(boolean bool) {
+        isTablet = bool;
     }
 
 //    @Override
