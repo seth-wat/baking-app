@@ -1,5 +1,6 @@
 package popmovies.com.example.android.baking_app;
 
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.widget.Button;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,80 +30,99 @@ public class StepActivity extends AppCompatActivity {
     StepFragment stepFragment;
     List<Step> steps;
     String recipeName;
-    @BindView(R.id.next_step_button) Button nextButton;
-    @BindView(R.id.previous_step_button) Button prevButton;
+    @BindView(R.id.next_step_button)
+    Button nextButton;
+    @BindView(R.id.previous_step_button)
+    Button prevButton;
 
+    public static final String STEPS_OUT = "steps_out";
+    public static final String STEP_POSITION_OUT = "step_position_out";
+    public static final String RECIPE_NAME_OUT = "recipe_name_out";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step);
         ButterKnife.bind(this);
 
-        //Get all the data we need out of the Intent that started the activity.
-        steps = Parcels.unwrap(getIntent().getParcelableExtra(RecipeActivity.EXTRA_STEPS));
-        stepPosition = getIntent().getIntExtra(RecipeActivity.EXTRA_STEP_POSITION, 0);
-        recipeName = getIntent().getStringExtra(RecipeActivity.EXTRA_RECIPE_NAME);
+        if (savedInstanceState != null) {
+            steps =  Parcels.unwrap((Parcelable) savedInstanceState.get(STEPS_OUT));
+            stepPosition = (Integer) savedInstanceState.get(STEP_POSITION_OUT);
+            recipeName = (String) savedInstanceState.get(RECIPE_NAME_OUT);
+        } else {
+            //Get all the data we need out of the Intent that started the activity.
+            steps = Parcels.unwrap(getIntent().getParcelableExtra(RecipeActivity.EXTRA_STEPS));
+            stepPosition = getIntent().getIntExtra(RecipeActivity.EXTRA_STEP_POSITION, 0);
+            recipeName = getIntent().getStringExtra(RecipeActivity.EXTRA_RECIPE_NAME);
 
-        //Set the proper ActionBar title;
-        getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
+            //Set the proper ActionBar title;
+            getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
 
-        //Create the Fragment.
-        stepFragment = new StepFragment();
-        stepFragment.setStep(steps.get(stepPosition));
+            //Create the Fragment.
+            stepFragment = new StepFragment();
+            stepFragment.setStep(steps.get(stepPosition));
 
-        //Execute the FragmentTransaction.
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.container_frame, stepFragment)
-                .commit();
+            //Execute the FragmentTransaction.
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.container_frame, stepFragment)
+                    .commit();
 
 
-        //Handles replacing the Fragment with the next step.
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            //Handles replacing the Fragment with the next step.
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                if (stepPosition + 1 >= steps.size()) {
-                    nextButton.setEnabled(false);
-                    return;
+                    if (stepPosition + 1 >= steps.size()) {
+                        nextButton.setEnabled(false);
+                        return;
+                    }
+                    prevButton.setEnabled(true);
+
+                    stepFragment = new StepFragment();
+                    stepPosition = (stepPosition + 1);
+                    if (steps.size() - 1 == stepPosition) nextButton.setEnabled(false);
+                    stepFragment.setStep(steps.get(stepPosition));
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, stepFragment)
+                            .commit();
+                    getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
                 }
-                prevButton.setEnabled(true);
+            });
 
-                stepFragment = new StepFragment();
-                stepPosition = (stepPosition + 1);
-                if (steps.size() - 1 == stepPosition) nextButton.setEnabled(false);
-                stepFragment.setStep(steps.get(stepPosition));
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container_frame, stepFragment)
-                        .commit();
-                getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
-            }
-        });
+            //Handles replacing the Fragment with the previous step.
+            prevButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        //Handles replacing the Fragment with the previous step.
-        prevButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    if (stepPosition - 1 < 0) {
+                        prevButton.setEnabled(false);
+                        return;
+                    }
+                    nextButton.setEnabled(true);
 
-                if (stepPosition - 1 < 0) {
-                    prevButton.setEnabled(false);
-                    return;
+                    stepFragment = new StepFragment();
+                    stepPosition = (stepPosition - 1);
+                    if (stepPosition == 0) prevButton.setEnabled(false);
+                    stepFragment.setStep(steps.get(stepPosition));
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, stepFragment)
+                            .commit();
+                    getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
                 }
-                nextButton.setEnabled(true);
 
-                stepFragment = new StepFragment();
-                stepPosition = (stepPosition - 1);
-                if (stepPosition == 0) prevButton.setEnabled(false);
-                stepFragment.setStep(steps.get(stepPosition));
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container_frame, stepFragment)
-                        .commit();
-                getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
-            }
+            });
+        }
 
-        });
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(STEPS_OUT, Parcels.wrap(steps));
+        outState.putInt(STEP_POSITION_OUT, stepPosition);
+        outState.putString(RECIPE_NAME_OUT, recipeName);
+        super.onSaveInstanceState(outState);
     }
 }

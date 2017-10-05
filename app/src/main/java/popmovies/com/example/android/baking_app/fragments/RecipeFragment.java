@@ -3,14 +3,18 @@ package popmovies.com.example.android.baking_app.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -33,7 +37,16 @@ public class RecipeFragment extends Fragment {
     private Recipe recipe;
     private onStepSelectedListener mCallback;
     private Unbinder unbinder;
+    private StepAdapter stepAdapter;
     private boolean isTablet = false;
+    private int positionToRestore;
+
+    /*
+    Constants for saving state.
+    */
+    public static final String IS_TABLET_OUT = "is_tablet_out";
+    public static final String RECIPE_OUT = "recipe_out";
+    public static final String POSITION_OUT = "position_out";
 
     @BindView(R.id.ingredients_text_view) TextView ingredientsTextView;
     @BindView(R.id.steps_recycler_view) RecyclerView stepsRecyclerView;
@@ -49,6 +62,14 @@ public class RecipeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(RECIPE_OUT)) {
+                recipe = Parcels.unwrap((Parcelable) savedInstanceState.get(RECIPE_OUT));
+                isTablet = (Boolean) savedInstanceState.get(IS_TABLET_OUT);
+                mCallback = (onStepSelectedListener) getContext();
+                positionToRestore = (Integer) savedInstanceState.get(POSITION_OUT);
+            }
+        }
         //Loop over the ingredient list and add them to the TextView.
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
             if (i == 0) {
@@ -66,7 +87,8 @@ public class RecipeFragment extends Fragment {
          */
         LinearLayoutManager stepLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         stepsRecyclerView.setLayoutManager(stepLayoutManager);
-        stepsRecyclerView.setAdapter(new StepAdapter(getContext(), recipe.getSteps(), mCallback, isTablet));
+        stepAdapter = new StepAdapter(getContext(), recipe.getSteps(), mCallback, isTablet, positionToRestore);
+        stepsRecyclerView.setAdapter(stepAdapter);
 
         return rootView;
     }
@@ -74,7 +96,7 @@ public class RecipeFragment extends Fragment {
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
     }
-    //check if the container activity implements this interface in onAttach
+
     public interface onStepSelectedListener {
         void onStepSelected(List<Step> steps, int position);
     }
@@ -87,12 +109,12 @@ public class RecipeFragment extends Fragment {
         isTablet = bool;
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        try {
-//            mCallback = (onStepSelectedListener) context;
-//        } catch (ClassCastException e) {
-//
-//        }
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(IS_TABLET_OUT, isTablet);
+        outState.putParcelable(RECIPE_OUT, Parcels.wrap(recipe));
+        outState.putInt(POSITION_OUT, stepAdapter.getLastPosition());
+        super.onSaveInstanceState(outState);
+    }
+
 }

@@ -30,6 +30,13 @@ public class RecipeActivity extends AppCompatActivity implements
     public static final String EXTRA_STEP_POSITION = "extra_step_position";
     public static final String EXTRA_RECIPE_NAME = "extra_recipe_name";
     public static final String EXTRA_RECIPE = "extra_recipe";
+
+    /*
+    savedInstanceState keys.
+     */
+    public static final String IS_TABLET_OUT = "is_tablet_out";
+    public static final String RECIPE_OUT = "recipe_out";
+
     Recipe recipe;
     boolean isTabletMode = false;
 
@@ -42,50 +49,66 @@ public class RecipeActivity extends AppCompatActivity implements
         If step_fragment_container exists then we are in tablet layout
         with the sw600dp.
          */
-        if (findViewById(R.id.step_fragment_container) != null) isTabletMode = true;
+        if (savedInstanceState != null) {
+            /*
+            We need to restore the Recipe and isTabletMode because it they are used
+            in the onStepSelectedListener which is called from an adapter in
+            RecipeFragment.
+             */
+            recipe = Parcels.unwrap((Parcelable) savedInstanceState.get(RECIPE_OUT));
+            isTabletMode = (Boolean) savedInstanceState.get(IS_TABLET_OUT);
+        } else {
+            /*
+            Otherwise the savedInstanceState is null and we need to create and commit
+            Fragments.
+             */
+            if (findViewById(R.id.step_fragment_container) != null) isTabletMode = true;
 
-        //Grab the recipe out of the intent.
-        if (getIntent().hasExtra(MainRecipeClickListener.RECIPE_EXTRA)) {
-            recipe = Parcels.unwrap((Parcelable) getIntent()
-                    .getExtras()
-                    .get(MainRecipeClickListener.RECIPE_EXTRA));
-        }
-        getSupportActionBar().setTitle(recipe.getName());
+            //Grab the recipe out of the intent.
+            if (getIntent().hasExtra(MainRecipeClickListener.RECIPE_EXTRA)) {
+                recipe = Parcels.unwrap((Parcelable) getIntent()
+                        .getExtras()
+                        .get(MainRecipeClickListener.RECIPE_EXTRA));
+            }
+
+            getSupportActionBar().setTitle(recipe.getName());
 
         /*
         Send a broadcast to update any widgets.
          */
-        Intent widgetIntent = new Intent(this, RecipeWidgetProvider.class);
-        widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplication());
-        int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(getApplication(), RecipeWidgetProvider.class));
-        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        widgetIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
-        sendBroadcast(widgetIntent);
+            Intent widgetIntent = new Intent(this, RecipeWidgetProvider.class);
+            widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplication());
+            int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(getApplication(), RecipeWidgetProvider.class));
+            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            widgetIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
+            sendBroadcast(widgetIntent);
 
-        //Create a new recipe fragment and pass in the recipe we just retrieved.
-        RecipeFragment recipeFragment = new RecipeFragment();
-        recipeFragment.setRecipe(recipe);
-        recipeFragment.setmCallback(this);
+            //Create a new recipe fragment and pass in the recipe we just retrieved.
+            RecipeFragment recipeFragment = new RecipeFragment();
+            recipeFragment.setRecipe(recipe);
+            recipeFragment.setmCallback(this);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (!isTabletMode) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (!isTabletMode) {
             /*
             If we are not in tablet mode then just add the RecipeFragment
             to the Activity.
              */
-            fragmentManager.beginTransaction()
-                    .add(R.id.recipe_fragment_container, recipeFragment)
-                    .commit();
-        } else {
-            //we are in tablet mode
-            recipeFragment.setTabletMode(true);
-            StepFragment stepFragment = new StepFragment();
-            stepFragment.setStep(recipe.getSteps().get(0));
-            fragmentManager.beginTransaction()
-                    .add(R.id.recipe_fragment_container, recipeFragment)
-                    .add(R.id.step_fragment_container, stepFragment)
-                    .commit();
+                fragmentManager.beginTransaction()
+                        .add(R.id.recipe_fragment_container, recipeFragment)
+                        .commit();
+            } else {
+                //we are in tablet mode
+                recipeFragment.setTabletMode(true);
+                StepFragment stepFragment = new StepFragment();
+                stepFragment.setStep(recipe.getSteps().get(0));
+                stepFragment.setIsTablet(true);
+                fragmentManager.beginTransaction()
+                        .add(R.id.recipe_fragment_container, recipeFragment)
+                        .add(R.id.step_fragment_container, stepFragment)
+                        .commit();
+            }
         }
     }
 
@@ -111,10 +134,18 @@ public class RecipeActivity extends AppCompatActivity implements
              */
             StepFragment stepFragment = new StepFragment();
             stepFragment.setStep(recipe.getSteps().get(position));
+            stepFragment.setIsTablet(true);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.step_fragment_container, stepFragment)
                     .commit();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(IS_TABLET_OUT, isTabletMode);
+        outState.putParcelable(RECIPE_OUT, Parcels.wrap(recipe));
+        super.onSaveInstanceState(outState);
     }
 
 }

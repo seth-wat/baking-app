@@ -23,13 +23,22 @@ import popmovies.com.example.android.baking_app.fragments.RecipeFragment;
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
-    List<Step> steps;
-    Context context;
-    RecipeFragment.onStepSelectedListener listener;
-    ArrayList<View> clearViews;
-    boolean tabletMode = false;
+    private List<Step> steps;
+    private Context context;
+    private RecipeFragment.onStepSelectedListener listener;
+    private ArrayList<View> clearViews;
+    private boolean tabletMode = false;
 
-    public StepAdapter(Context context, List<Step> steps, RecipeFragment.onStepSelectedListener listener, boolean tabletMode) {
+    /*
+    lastPosition represents the position passed in via the constructor.
+    lastPositionToSend represents the position that will be returned by getLastPosition.
+     */
+    private int lastPosition;
+    private int lastPositionToSend;
+
+    private ViewHolder viewHolder;
+
+    public StepAdapter(Context context, List<Step> steps, RecipeFragment.onStepSelectedListener listener, boolean tabletMode, int lastPosition) {
         this.context = context;
         this.steps = steps;
         this.listener = listener;
@@ -37,13 +46,15 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         if (tabletMode) {
             this.tabletMode = tabletMode;
         }
+        this.lastPosition = lastPosition;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_step, parent, false);
-        return new ViewHolder(view);
+        viewHolder = new ViewHolder(view);
+        return viewHolder;
     }
 
     @Override
@@ -55,7 +66,15 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         If we are at position 0 and using a tablet, then the item view should be highlighted because
         that step will be displayed by default in StepFragment.
          */
-        if (position == 0 && tabletMode) {
+        if (position == 0 && tabletMode && lastPosition == 0) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+            clearViews.add(holder.itemView);
+        }
+        if (tabletMode && lastPosition != 0 && lastPosition == position) {
+            /*
+            If the lastPosition is not 0 and lastPosition matches the current position
+            we need to restore the background color change from a previous state.
+             */
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
             clearViews.add(holder.itemView);
         }
@@ -67,6 +86,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
                 the Fragments host Activity.
                 */
                 listener.onStepSelected(steps, position);
+                lastPositionToSend = position;
                 /*
                 When a view is selected highlight it, if a view has been selected before
                 return the color to normal.
@@ -83,6 +103,15 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         });
 
     }
+    public int getLastPosition() {
+        /*
+        This should be called to return the last position that was selected before the instance
+        is destroyed, or the last selected position from previous states
+        if nothing was selected during this instance.
+         */
+        if (lastPositionToSend == 0) lastPositionToSend = lastPosition;
+        return lastPositionToSend;
+    }
 
     @Override
     public int getItemCount() {
@@ -94,4 +123,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
             super(itemView);
         }
     }
+
+
 }

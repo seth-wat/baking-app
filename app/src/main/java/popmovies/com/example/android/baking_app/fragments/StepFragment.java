@@ -1,13 +1,16 @@
 package popmovies.com.example.android.baking_app.fragments;
 
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -23,6 +26,9 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import org.parceler.Parcel;
+import org.parceler.Parcels;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,9 +43,11 @@ import popmovies.com.example.android.baking_app.data.Step;
 public class StepFragment extends Fragment {
 
     private Step step;
-    private int position;
     private Unbinder unbinder;
     SimpleExoPlayer simpleExoPlayer;
+    private boolean isTablet = false;
+    public static final String OUTSTATE_STEP = "outstate_step";
+    public static final String OUTSTATE_IS_TABLET = "outstate_is_tablet";
 
     @BindView(R.id.step_detail_text_view) TextView stepDetailTextView;
     @BindView(R.id.step_undetail_text_view) TextView unDetailTextView;
@@ -50,6 +58,24 @@ public class StepFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         SimpleExoPlayerView simpleExoPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exo_player_view);
+
+        if (savedInstanceState != null) {
+            /*
+            retrieve the Step object out of the outstate.
+             */
+            if (savedInstanceState.containsKey(OUTSTATE_STEP)) {
+                step = Parcels.unwrap((Parcelable) savedInstanceState.get(OUTSTATE_STEP));
+                isTablet = (Boolean) savedInstanceState.get(OUTSTATE_IS_TABLET);
+            }
+        }
+        /*
+        If the users is on a phone and the device is in landscape mode the ExoPlayer should
+        take up the entire view space.
+         */
+        if (isTablet == false && getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            simpleExoPlayerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
         FrameLayout exoPlayerNotFoundView = (FrameLayout) rootView.findViewById(R.id.exo_player_not_found_view);
 
         /*
@@ -96,5 +122,16 @@ public class StepFragment extends Fragment {
             simpleExoPlayer.stop();
             simpleExoPlayer.release();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(OUTSTATE_STEP, Parcels.wrap(step));
+        outState.putBoolean(OUTSTATE_IS_TABLET, isTablet);
+        super.onSaveInstanceState(outState);
+    }
+
+    public void setIsTablet(boolean bool) {
+        isTablet = bool;
     }
 }
