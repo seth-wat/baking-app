@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">baking_app</string>
+    <string name="app_name">Baking App</string>
     <string name="title_activity_recipe">RecipeActivity</string>
 
     <!-- TODO: Remove or change this placeholder text -->

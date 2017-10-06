@@ -100,7 +100,9 @@ public class StepFragment extends Fragment {
             exoPlayerNotFoundContainer.setVisibility(View.VISIBLE);
         } else {
             simpleExoPlayerView.setVisibility(View.GONE);
-            exoPlayerNotFoundTextView.setText(getString(R.string.error_message));
+            if (exoPlayerNotFoundTextView != null) {
+                exoPlayerNotFoundTextView.setText(getString(R.string.error_message));
+            }
             exoPlayerNotFoundContainer.setVisibility(View.VISIBLE);
         }
         unDetailTextView.setText(step.getShortDescription());
