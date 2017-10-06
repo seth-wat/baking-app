@@ -1,11 +1,13 @@
 package popmovies.com.example.android.baking_app;
 
+import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.parceler.Parcels;
 
@@ -48,6 +50,52 @@ public class StepActivity extends AppCompatActivity {
             steps =  Parcels.unwrap((Parcelable) savedInstanceState.get(STEPS_OUT));
             stepPosition = (Integer) savedInstanceState.get(STEP_POSITION_OUT);
             recipeName = (String) savedInstanceState.get(RECIPE_NAME_OUT);
+
+            //Handles replacing the Fragment with the next step.
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (stepPosition + 1 >= steps.size()) {
+                        nextButton.setEnabled(false);
+                        return;
+                    }
+                    prevButton.setEnabled(true);
+
+                    stepFragment = new StepFragment();
+                    stepPosition = (stepPosition + 1);
+                    if (steps.size() - 1 == stepPosition) nextButton.setEnabled(false);
+                    stepFragment.setStep(steps.get(stepPosition));
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, stepFragment)
+                            .commit();
+                    getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
+                }
+            });
+
+            //Handles replacing the Fragment with the previous step.
+            prevButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (stepPosition - 1 < 0) {
+                        prevButton.setEnabled(false);
+                        return;
+                    }
+                    nextButton.setEnabled(true);
+
+                    stepFragment = new StepFragment();
+                    stepPosition = (stepPosition - 1);
+                    if (stepPosition == 0) prevButton.setEnabled(false);
+                    stepFragment.setStep(steps.get(stepPosition));
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_frame, stepFragment)
+                            .commit();
+                    getSupportActionBar().setTitle(recipeName + " - Step #" + Integer.toString(stepPosition));
+                }
+
+            });
         } else {
             //Get all the data we need out of the Intent that started the activity.
             steps = Parcels.unwrap(getIntent().getParcelableExtra(RecipeActivity.EXTRA_STEPS));
@@ -72,7 +120,6 @@ public class StepActivity extends AppCompatActivity {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if (stepPosition + 1 >= steps.size()) {
                         nextButton.setEnabled(false);
                         return;

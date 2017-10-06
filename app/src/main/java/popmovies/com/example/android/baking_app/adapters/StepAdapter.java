@@ -70,7 +70,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
             clearViews.add(holder.itemView);
         }
-        if (tabletMode && lastPosition != 0 && lastPosition == position) {
+        if (lastPosition != 0 && lastPosition == position) {
             /*
             If the lastPosition is not 0 and lastPosition matches the current position
             we need to restore the background color change from a previous state.
@@ -92,10 +92,12 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
                 return the color to normal.
                  */
                 if (!clearViews.isEmpty()) {
+                    ArrayList<View> clearFromLoop = new ArrayList<View>();
                     for (View view : clearViews) {
                         view.setBackgroundColor(ContextCompat.getColor(context, R.color.defaultBackground));
-                        clearViews.remove(view);
+                        clearFromLoop.add(view);
                     }
+                    clearViews.removeAll(clearFromLoop);
                 }
                 v.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
                 clearViews.add(v);

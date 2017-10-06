@@ -57,6 +57,7 @@ public class RecipeActivity extends AppCompatActivity implements
              */
             recipe = Parcels.unwrap((Parcelable) savedInstanceState.get(RECIPE_OUT));
             isTabletMode = (Boolean) savedInstanceState.get(IS_TABLET_OUT);
+            getSupportActionBar().setTitle(recipe.getName());
         } else {
             /*
             Otherwise the savedInstanceState is null and we need to create and commit

@@ -113,8 +113,13 @@ public class RecipeFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(IS_TABLET_OUT, isTablet);
         outState.putParcelable(RECIPE_OUT, Parcels.wrap(recipe));
-        outState.putInt(POSITION_OUT, stepAdapter.getLastPosition());
+        positionToRestore = stepAdapter.getLastPosition();
+        outState.putInt(POSITION_OUT, positionToRestore);
         super.onSaveInstanceState(outState);
+    }
+
+    public void setPositionToRestore(int i) {
+        positionToRestore = i;
     }
 
 }

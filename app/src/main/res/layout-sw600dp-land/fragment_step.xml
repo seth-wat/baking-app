@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="popmovies.com.example.android.baking_app.fragments.StepFragment">
+
+        <TextView
+            android:id="@+id/step_undetail_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="10dp"
+            android:textAlignment="center"
+            android:textColor="#fff"
+            android:textSize="24sp"
+            android:textStyle="bold|italic" />
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/exo_player_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:paddingTop="10dp" />
+
+        <FrameLayout
+            android:id="@+id/exo_player_not_found_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="invisible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingTop="10dp"
+                android:text="Sorry, no video was found for this step"
+                android:textColor="@android:color/holo_red_light"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            android:id="@+id/step_detail_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+</LinearLayout>

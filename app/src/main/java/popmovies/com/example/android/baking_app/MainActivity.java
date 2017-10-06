@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Initialize the loader to fetch/parse the recipes.
         LoaderManager loaderManager = getSupportLoaderManager();
         loaderManager.initLoader(RECIPE_LOADER, null, this);
+        getSupportActionBar().setTitle("Recipe Selection");
 
     }
 

@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="popmovies.com.example.android.baking_app.fragments.RecipeFragment">
+
+    <TextView
+        android:id="@+id/ingredient_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="10dp"
+        android:text="Ingredients"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="24sp"
+        android:textStyle="bold|italic" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/ingredient_divider"
+            android:layout_width="1dp"
+            android:layout_height="19dp"
+            android:background="#DCDCDC"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ingredients_text_view"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:textSize="16dp"
+            app:layout_constraintRight_toLeftOf="@+id/ingredient_divider"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/step_divider"
+            android:layout_width="1dp"
+            android:layout_height="203dp"
+            android:background="#DCDCDC"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/step_title_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="10dp"
+            android:text="Steps"
+            android:textAlignment="center"
+            android:textColor="#fff"
+            app:layout_constraintRight_toLeftOf="@+id/step_divider"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="24sp"
+            android:textStyle="bold|italic" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/steps_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toLeftOf="@+id/step_divider"
+            app:layout_constraintTop_toBottomOf="@+id/step_title_text_view" />
+
+    </android.support.constraint.ConstraintLayout>
+</LinearLayout>

@@ -68,15 +68,8 @@ public class StepFragment extends Fragment {
                 isTablet = (Boolean) savedInstanceState.get(OUTSTATE_IS_TABLET);
             }
         }
-        /*
-        If the users is on a phone and the device is in landscape mode the ExoPlayer should
-        take up the entire view space.
-         */
-        if (isTablet == false && getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            simpleExoPlayerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        }
 
-        FrameLayout exoPlayerNotFoundView = (FrameLayout) rootView.findViewById(R.id.exo_player_not_found_view);
+        View exoPlayerNotFoundView = rootView.findViewById(R.id.exo_player_not_found_view);
 
         /*
         Code below handles creating and preparing the SimpleExoPlayer
