@@ -9,6 +9,7 @@ import org.parceler.Parcels;
 
 import popmovies.com.example.android.baking_app.RecipeActivity;
 import popmovies.com.example.android.baking_app.data.Recipe;
+import popmovies.com.example.android.baking_app.widget.RecipeWidgetProvider;
 
 /**
  *
@@ -17,6 +18,6 @@ import popmovies.com.example.android.baking_app.data.Recipe;
 public class ListWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new WidgetListRemoteViewsFactory(this.getApplicationContext(), intent.getStringArrayListExtra("ingredientBundle"));
+        return new WidgetListRemoteViewsFactory(this.getApplicationContext(), intent.getStringArrayListExtra(RecipeWidgetProvider.INGREDIENT_BUNDLE_EXTRA));
     }
 }

@@ -1,6 +1,7 @@
 package popmovies.com.example.android.baking_app.fragments;
 
 import android.content.res.Configuration;
+import android.net.Network;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -36,6 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import popmovies.com.example.android.baking_app.R;
 import popmovies.com.example.android.baking_app.data.Step;
+import popmovies.com.example.android.baking_app.utils.NetworkUtils;
 
 /**
 
@@ -69,7 +71,8 @@ public class StepFragment extends Fragment {
             }
         }
 
-        View exoPlayerNotFoundView = rootView.findViewById(R.id.exo_player_not_found_view);
+        View exoPlayerNotFoundContainer = rootView.findViewById(R.id.exo_player_not_found_view);
+        TextView exoPlayerNotFoundTextView = (TextView) rootView.findViewById(R.id.exo_player_not_found_text_view);
 
         /*
         Code below handles creating and preparing the SimpleExoPlayer
@@ -77,8 +80,8 @@ public class StepFragment extends Fragment {
         */
         TrackSelector trackSelector = new DefaultTrackSelector();
         LoadControl loadControl = new DefaultLoadControl();
-        if (!step.getDisplayVideoUrlString().isEmpty()) {
-            exoPlayerNotFoundView.setVisibility(View.GONE);
+        if (!step.getDisplayVideoUrlString().isEmpty() && NetworkUtils.hasInternet(getContext())) {
+            exoPlayerNotFoundContainer.setVisibility(View.GONE);
             simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
             Uri mediaUri = Uri.parse(step.getDisplayVideoUrlString());
             String userAgent = Util.getUserAgent(getContext(), "baking_app");
@@ -92,9 +95,13 @@ public class StepFragment extends Fragment {
 
             //Attach the simpleExoPlayer to its view
             simpleExoPlayerView.setPlayer(simpleExoPlayer);
+        } else if(step.getDisplayVideoUrlString().isEmpty() && NetworkUtils.hasInternet(getContext())) {
+            simpleExoPlayerView.setVisibility(View.GONE);
+            exoPlayerNotFoundContainer.setVisibility(View.VISIBLE);
         } else {
             simpleExoPlayerView.setVisibility(View.GONE);
-            exoPlayerNotFoundView.setVisibility(View.VISIBLE);
+            exoPlayerNotFoundTextView.setText(getString(R.string.error_message));
+            exoPlayerNotFoundContainer.setVisibility(View.VISIBLE);
         }
         unDetailTextView.setText(step.getShortDescription());
         stepDetailTextView.setText(step.getLongDescription());
@@ -111,7 +118,7 @@ public class StepFragment extends Fragment {
         /*
         If step is empty then simpleExoPlayer was never initialized.
          */
-        if (!step.getDisplayVideoUrlString().isEmpty()) {
+        if (simpleExoPlayer != null) {
             simpleExoPlayer.stop();
             simpleExoPlayer.release();
         }

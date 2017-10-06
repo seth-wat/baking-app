@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAlignment="center"
-            android:text="Sorry, no video was found for this step."
+            android:text="@string/video_error_message"
             android:textColor="@android:color/holo_red_light"
             android:textStyle="bold" />
 

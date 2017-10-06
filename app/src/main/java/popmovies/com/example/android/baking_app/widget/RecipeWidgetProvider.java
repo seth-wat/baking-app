@@ -24,6 +24,8 @@ import popmovies.com.example.android.baking_app.services.ListWidgetService;
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
     public Recipe recipe;
+    public static String ACTION_UPDATE_ME = "update_me";
+    public static String INGREDIENT_BUNDLE_EXTRA = "ingredientBundle";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -60,7 +62,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
             Set the remote adapter.
              */
             Intent adapterIntent = new Intent(context, ListWidgetService.class);
-            adapterIntent.putExtra("ingredientBundle", ingredientToPass);
+            adapterIntent.putExtra(INGREDIENT_BUNDLE_EXTRA, ingredientToPass);
             views.setRemoteAdapter(R.id.ingredient_list_view, adapterIntent);
 
             /*
@@ -68,8 +70,8 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
             the remote adapter. It is done in this way because setRemoteAdapter
             does not update.
              */
-            Intent updateRemoteViewsIntent = new Intent("update_me");
-            updateRemoteViewsIntent.putExtra("ingredientBundle", ingredientToPass);
+            Intent updateRemoteViewsIntent = new Intent(ACTION_UPDATE_ME);
+            updateRemoteViewsIntent.putExtra(INGREDIENT_BUNDLE_EXTRA, ingredientToPass);
             context.sendBroadcast(updateRemoteViewsIntent);
 
             /*

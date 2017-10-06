@@ -15,6 +15,7 @@ import popmovies.com.example.android.baking_app.R;
 import popmovies.com.example.android.baking_app.data.Ingredient;
 import popmovies.com.example.android.baking_app.utils.JsonUtils;
 import popmovies.com.example.android.baking_app.utils.NetworkUtils;
+import popmovies.com.example.android.baking_app.widget.RecipeWidgetProvider;
 
 /**
  * Populates the widget list with the correct ingredients.
@@ -92,12 +93,12 @@ public class WidgetListRemoteViewsFactory implements RemoteViewsService.RemoteVi
             broadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    ingredients = intent.getStringArrayListExtra("ingredientBundle");
+                    ingredients = intent.getStringArrayListExtra(RecipeWidgetProvider.INGREDIENT_BUNDLE_EXTRA);
                     onDataSetChanged();
                 }
             };
             IntentFilter filter = new IntentFilter();
-            filter.addAction("update_me");
+            filter.addAction(RecipeWidgetProvider.ACTION_UPDATE_ME);
             context.registerReceiver(broadcastReceiver, filter);
         }
     }

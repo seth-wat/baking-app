@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingTop="10dp"
-                android:text="Sorry, no video was found for this step"
+                android:text="@string/video_error_message"
                 android:textColor="@android:color/holo_red_light"
                 android:textStyle="bold" />
         </FrameLayout>
