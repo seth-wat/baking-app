@@ -3,12 +3,18 @@ package popmovies.com.example.android.baking_app.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +66,19 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         TextView stepTextView = (TextView) holder.itemView.findViewById(R.id.step_text_view);
+        final ImageView thumbnailImageView = (ImageView) holder.itemView.findViewById(R.id.thumbnail_image_view);
         stepTextView.setText( (position) + ". " + steps.get(position).getShortDescription());
+        Picasso.with(context).load(Uri.parse(steps.get(position).getThumbnailUrl())).into(thumbnailImageView,
+                new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        thumbnailImageView.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                    }
+                });
 
         /*
         If we are at position 0 and using a tablet, then the item view should be highlighted because

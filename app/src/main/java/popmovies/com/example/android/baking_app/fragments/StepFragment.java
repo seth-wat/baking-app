@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,9 +51,14 @@ public class StepFragment extends Fragment {
     private boolean isTablet = false;
     public static final String OUTSTATE_STEP = "outstate_step";
     public static final String OUTSTATE_IS_TABLET = "outstate_is_tablet";
+    public static final String OUTSTATE_EXO_POSITION = "outstate_exo_position";
+    private long exoPosition = 0;
 
-    @BindView(R.id.step_detail_text_view) TextView stepDetailTextView;
-    @BindView(R.id.step_undetail_text_view) TextView unDetailTextView;
+    @BindView(R.id.step_detail_text_view)
+    TextView stepDetailTextView;
+    @BindView(R.id.step_undetail_text_view)
+    TextView unDetailTextView;
+    View exoPlayerNotFoundContainer;
 
     @Nullable
     @Override
@@ -68,34 +74,18 @@ public class StepFragment extends Fragment {
             if (savedInstanceState.containsKey(OUTSTATE_STEP)) {
                 step = Parcels.unwrap((Parcelable) savedInstanceState.get(OUTSTATE_STEP));
                 isTablet = (Boolean) savedInstanceState.get(OUTSTATE_IS_TABLET);
+                exoPosition = (Long) savedInstanceState.get(OUTSTATE_EXO_POSITION);
             }
         }
 
-        View exoPlayerNotFoundContainer = rootView.findViewById(R.id.exo_player_not_found_view);
+        exoPlayerNotFoundContainer = rootView.findViewById(R.id.exo_player_not_found_view);
         TextView exoPlayerNotFoundTextView = (TextView) rootView.findViewById(R.id.exo_player_not_found_text_view);
 
-        /*
-        Code below handles creating and preparing the SimpleExoPlayer
-        No adaptive track selection. Simplifies trackSelector creation.
-        */
-        TrackSelector trackSelector = new DefaultTrackSelector();
-        LoadControl loadControl = new DefaultLoadControl();
         if (!step.getDisplayVideoUrlString().isEmpty() && NetworkUtils.hasInternet(getContext())) {
-            exoPlayerNotFoundContainer.setVisibility(View.GONE);
-            simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-            Uri mediaUri = Uri.parse(step.getDisplayVideoUrlString());
-            String userAgent = Util.getUserAgent(getContext(), "baking_app");
-            MediaSource mediaSource = new ExtractorMediaSource(
-                    mediaUri,
-                    new DefaultDataSourceFactory(getContext(), userAgent),
-                    new DefaultExtractorsFactory(), null, null
-            );
-            simpleExoPlayer.prepare(mediaSource);
-            simpleExoPlayer.setPlayWhenReady(false);
-
+            simpleExoPlayer = initExoPlayer();
             //Attach the simpleExoPlayer to its view
             simpleExoPlayerView.setPlayer(simpleExoPlayer);
-        } else if(step.getDisplayVideoUrlString().isEmpty() && NetworkUtils.hasInternet(getContext())) {
+        } else if (step.getDisplayVideoUrlString().isEmpty() && NetworkUtils.hasInternet(getContext())) {
             simpleExoPlayerView.setVisibility(View.GONE);
             exoPlayerNotFoundContainer.setVisibility(View.VISIBLE);
         } else {
@@ -114,6 +104,19 @@ public class StepFragment extends Fragment {
         this.step = step;
     }
 
+//    @Override
+//    public void onPause() {
+//        /*
+//        If step is empty then simpleExoPlayer was never initialized.
+//         */
+//        if (simpleExoPlayer != null) {
+//            Log.v("Log", "onPause ran What am I here? " + Long.toString(simpleExoPlayer.getCurrentPosition()));
+//            simpleExoPlayer.stop();
+//            simpleExoPlayer.release();
+//        }
+//        super.onPause();
+//    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -127,13 +130,49 @@ public class StepFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        simpleExoPlayer = initExoPlayer();
+        super.onResume();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(OUTSTATE_STEP, Parcels.wrap(step));
         outState.putBoolean(OUTSTATE_IS_TABLET, isTablet);
+        Log.v("Log", "What am I " + Long.toString(exoPosition));
+        outState.putLong(OUTSTATE_EXO_POSITION, simpleExoPlayer.getCurrentPosition());
         super.onSaveInstanceState(outState);
     }
 
     public void setIsTablet(boolean bool) {
         isTablet = bool;
     }
+
+    private SimpleExoPlayer initExoPlayer() {
+        /*
+        Code below handles creating and preparing the SimpleExoPlayer
+        No adaptive track selection. Simplifies trackSelector creation.
+        */
+        TrackSelector trackSelector = new DefaultTrackSelector();
+        LoadControl loadControl = new DefaultLoadControl();
+        exoPlayerNotFoundContainer.setVisibility(View.GONE);
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
+        Uri mediaUri = Uri.parse(step.getDisplayVideoUrlString());
+        String userAgent = Util.getUserAgent(getContext(), "baking_app");
+        MediaSource mediaSource = new ExtractorMediaSource(
+                mediaUri,
+                new DefaultDataSourceFactory(getContext(), userAgent),
+                new DefaultExtractorsFactory(), null, null
+        );
+        if (exoPosition != 0) {
+            simpleExoPlayer.seekTo(exoPosition);
+            simpleExoPlayer.setPlayWhenReady(true);
+        } else {
+            simpleExoPlayer.setPlayWhenReady(false);
+        }
+        simpleExoPlayer.prepare(mediaSource);
+
+        return simpleExoPlayer;
+    }
+
 }

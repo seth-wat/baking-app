@@ -32,6 +32,8 @@ public class Step {
         return shortDescription;
     }
 
+    public String getThumbnailUrl() { return thumbnailUrl; }
+
     public String getLongDescription() {
         return longDescription;
     }
@@ -41,9 +43,6 @@ public class Step {
     public String getDisplayVideoUrlString() {
         if (!videoUrl.isEmpty()) {
             return videoUrl;
-        }
-        if (!thumbnailUrl.isEmpty()) {
-            return thumbnailUrl;
         }
         return "";
     }

@@ -6,12 +6,20 @@
 
     <TextView
         android:id="@+id/step_text_view"
-        android:textSize="16dp"
-        android:padding="15dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:textSize="16dp" />
+
+    <ImageView
+        android:id="@+id/thumbnail_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:paddingLeft="16dp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#DCDCDC"/>
+        android:background="#DCDCDC" />
 </LinearLayout>
