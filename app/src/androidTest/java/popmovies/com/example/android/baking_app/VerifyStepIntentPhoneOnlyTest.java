@@ -19,10 +19,11 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 
 /**
- *
+ * Warning this test is only meant to be ran on devices with a sw < 600dp
+ * This is because the intent is not used on tablets.
  */
 @RunWith(AndroidJUnit4.class)
-public class VerifyStepIntentTest {
+public class VerifyStepIntentPhoneOnlyTest {
     public static final String RECIPE_NAME_NUTELLA = "Nutella Pie";
     public static final String FIRST_ITEM = "0.";
     @Rule
@@ -33,7 +34,7 @@ public class VerifyStepIntentTest {
         /*
         Selects and clicks the first item out of the RecyclerView that contains steps
         in RecipeFragment. Does this by reading the text of the item used to populate
-        the RecyclerView. Verifies the Intent extras.
+        the RecyclerView. Verifies the correct intent is sent for the step.
          */
         onView(withText(RECIPE_NAME_NUTELLA)).perform(click());
         onView(allOf(withId(R.id.step_text_view), withText(startsWith(FIRST_ITEM))))

@@ -94,6 +94,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onPause() {
         if (simpleExoPlayer != null) {
+            exoPosition = simpleExoPlayer.getCurrentPosition();
             simpleExoPlayer.stop();
             simpleExoPlayer.release();
         }
