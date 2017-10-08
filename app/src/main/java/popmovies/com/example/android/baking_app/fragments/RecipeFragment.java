@@ -109,6 +109,8 @@ public class RecipeFragment extends Fragment {
         isTablet = bool;
     }
 
+
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(IS_TABLET_OUT, isTablet);

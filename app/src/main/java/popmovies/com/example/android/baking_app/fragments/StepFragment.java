@@ -59,17 +59,20 @@ public class StepFragment extends Fragment {
     @BindView(R.id.step_undetail_text_view)
     TextView unDetailTextView;
     View exoPlayerNotFoundContainer;
+    TextView exoPlayerNotFoundTextView;
+    SimpleExoPlayerView simpleExoPlayerView;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        SimpleExoPlayerView simpleExoPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exo_player_view);
+        simpleExoPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exo_player_view);
 
         if (savedInstanceState != null) {
             /*
-            retrieve the Step object out of the outstate.
+            Restore state.
              */
             if (savedInstanceState.containsKey(OUTSTATE_STEP)) {
                 step = Parcels.unwrap((Parcelable) savedInstanceState.get(OUTSTATE_STEP));
@@ -79,8 +82,30 @@ public class StepFragment extends Fragment {
         }
 
         exoPlayerNotFoundContainer = rootView.findViewById(R.id.exo_player_not_found_view);
-        TextView exoPlayerNotFoundTextView = (TextView) rootView.findViewById(R.id.exo_player_not_found_text_view);
+        exoPlayerNotFoundTextView = (TextView) rootView.findViewById(R.id.exo_player_not_found_text_view);
+        return rootView;
+    }
 
+    public void setStep(Step step) {
+        this.step = step;
+    }
+
+
+    @Override
+    public void onPause() {
+        if (simpleExoPlayer != null) {
+            simpleExoPlayer.stop();
+            simpleExoPlayer.release();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        /*
+        Handle initializing and attaching ExoPlayer here in order to
+        restore video state.
+         */
         if (!step.getDisplayVideoUrlString().isEmpty() && NetworkUtils.hasInternet(getContext())) {
             simpleExoPlayer = initExoPlayer();
             //Attach the simpleExoPlayer to its view
@@ -97,41 +122,6 @@ public class StepFragment extends Fragment {
         }
         unDetailTextView.setText(step.getShortDescription());
         stepDetailTextView.setText(step.getLongDescription());
-        return rootView;
-    }
-
-    public void setStep(Step step) {
-        this.step = step;
-    }
-
-//    @Override
-//    public void onPause() {
-//        /*
-//        If step is empty then simpleExoPlayer was never initialized.
-//         */
-//        if (simpleExoPlayer != null) {
-//            Log.v("Log", "onPause ran What am I here? " + Long.toString(simpleExoPlayer.getCurrentPosition()));
-//            simpleExoPlayer.stop();
-//            simpleExoPlayer.release();
-//        }
-//        super.onPause();
-//    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        /*
-        If step is empty then simpleExoPlayer was never initialized.
-         */
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.stop();
-            simpleExoPlayer.release();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        simpleExoPlayer = initExoPlayer();
         super.onResume();
     }
 
@@ -139,13 +129,8 @@ public class StepFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(OUTSTATE_STEP, Parcels.wrap(step));
         outState.putBoolean(OUTSTATE_IS_TABLET, isTablet);
-        Log.v("Log", "What am I " + Long.toString(exoPosition));
         outState.putLong(OUTSTATE_EXO_POSITION, simpleExoPlayer.getCurrentPosition());
         super.onSaveInstanceState(outState);
-    }
-
-    public void setIsTablet(boolean bool) {
-        isTablet = bool;
     }
 
     private SimpleExoPlayer initExoPlayer() {
@@ -175,4 +160,7 @@ public class StepFragment extends Fragment {
         return simpleExoPlayer;
     }
 
+    public void setIsTablet(boolean bool) {
+        isTablet = bool;
+    }
 }
