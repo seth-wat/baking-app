@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -50,6 +51,7 @@ public class RecipeActivity extends AppCompatActivity implements
         If step_fragment_container exists then we are in tablet layout
         with the sw600dp.
          */
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (savedInstanceState != null) {
             /*
             We need to restore the Recipe and isTabletMode because it they are used
@@ -114,18 +116,13 @@ public class RecipeActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.recipes_menu, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_main_activity) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+        if (item.getItemId() == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
             return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
